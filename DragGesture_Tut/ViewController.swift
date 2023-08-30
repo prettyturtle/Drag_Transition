@@ -12,11 +12,14 @@ import Then
 
 final class ViewController: UIViewController {
     
-    private lazy var imageView1 = UIImageView().then { iv in
+    private lazy var imageView = UIImageView().then { iv in
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panAction))
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapAction))
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchAction))
+        
         iv.addGestureRecognizer(panGesture)
         iv.addGestureRecognizer(tapGesture)
+        iv.addGestureRecognizer(pinchGesture)
         iv.isUserInteractionEnabled = true
         
         Task {
@@ -28,8 +31,8 @@ final class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.addSubview(imageView1)
-        imageView1.snp.makeConstraints {
+        view.addSubview(imageView)
+        imageView.snp.makeConstraints {
             $0.size.equalTo(300)
             $0.center.equalToSuperview()
         }
@@ -63,6 +66,12 @@ final class ViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @objc func pinchAction(_ gesture: UIPinchGestureRecognizer) {
+        print(gesture)
+        imageView.transform = imageView.transform.scaledBy(x: gesture.scale, y: gesture.scale)
+        gesture.scale = 1
     }
 }
 
