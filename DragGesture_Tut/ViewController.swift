@@ -11,14 +11,22 @@ import SnapKit
 import Then
 
 final class ViewController: UIViewController {
+    private lazy var panGesture = UIPanGestureRecognizer(target: self, action: #selector(panAction))
+    private lazy var tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapAction))
+    private lazy var doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(doubleTapAction))
+    private lazy var pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchAction))
+    
+    private var imageViewScale = 1.0
     
     private lazy var imageView = UIImageView().then { iv in
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(panAction))
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapAction))
-        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(pinchAction))
+        doubleTapGesture.numberOfTapsRequired = 2
+        
+        tapGesture.delegate = self
+        doubleTapGesture.delegate = self
         
         iv.addGestureRecognizer(panGesture)
         iv.addGestureRecognizer(tapGesture)
+        iv.addGestureRecognizer(doubleTapGesture)
         iv.addGestureRecognizer(pinchGesture)
         iv.isUserInteractionEnabled = true
         
@@ -48,8 +56,8 @@ final class ViewController: UIViewController {
         }
         
         let transition = gesture.translation(in: gesture.view)
-        let dx = gesture.view!.center.x + transition.x
-        let dy = gesture.view!.center.y + transition.y
+        let dx = gesture.view!.center.x + transition.x * imageViewScale
+        let dy = gesture.view!.center.y + transition.y * imageViewScale
         
         gesture.setTranslation(.zero, in: gesture.view)
         
@@ -68,10 +76,32 @@ final class ViewController: UIViewController {
         }
     }
     
+    @objc func doubleTapAction(_ gesture: UITapGestureRecognizer) {
+        if let imageView = gesture.view as? UIImageView {
+            imageView.transform = imageView.transform == .identity ? .init(scaleX: 2.0, y: 2.0) : .identity
+            imageViewScale = imageView.transform == .identity ? 1.0 : 2.0
+        }
+    }
+    
     @objc func pinchAction(_ gesture: UIPinchGestureRecognizer) {
-        print(gesture)
+        print(gesture.scale)
         imageView.transform = imageView.transform.scaledBy(x: gesture.scale, y: gesture.scale)
+        imageViewScale += gesture.scale - 1
+        print(imageViewScale)
         gesture.scale = 1
+    }
+}
+
+extension ViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer,
+        shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer
+    ) -> Bool {
+        if gestureRecognizer == self.tapGesture &&
+            otherGestureRecognizer == self.doubleTapGesture {
+            return false
+        }
+        return true
     }
 }
 
