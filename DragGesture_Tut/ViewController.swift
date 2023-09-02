@@ -62,6 +62,24 @@ final class ViewController: UIViewController {
         gesture.setTranslation(.zero, in: gesture.view)
         
         gesture.view?.center = CGPoint(x: dx, y: dy)
+        
+        if gesture.state == .ended {
+            if (gesture.view?.center.x)! < view.bounds.minX {
+                gesture.view?.center.x = view.bounds.minX + (gesture.view?.bounds.width)! / 2
+            }
+            
+            if (gesture.view?.center.x)! > view.bounds.maxX {
+                gesture.view?.center.x = view.bounds.maxX - (gesture.view?.bounds.width)! / 2
+            }
+            
+            if (gesture.view?.center.y)! > view.bounds.maxY {
+                gesture.view?.center.y = view.bounds.maxY - (gesture.view?.bounds.height)! / 2
+            }
+            
+            if (gesture.view?.center.y)! < view.bounds.minY {
+                gesture.view?.center.y = view.bounds.minY + (gesture.view?.bounds.height)! / 2
+            }
+        }
     }
     
     @objc func tapAction(_ gesture: UITapGestureRecognizer) {
