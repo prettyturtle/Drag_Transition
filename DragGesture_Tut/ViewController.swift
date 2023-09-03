@@ -18,6 +18,12 @@ final class ViewController: UIViewController {
     
     private var imageViewScale = 1.0
     
+    private lazy var button = UIButton().then {
+        $0.setTitle("SHOW", for: .normal)
+        $0.setTitleColor(.label, for: .normal)
+        $0.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
+    }
+    
     private lazy var imageView = UIImageView().then { iv in
         doubleTapGesture.numberOfTapsRequired = 2
         
@@ -36,13 +42,53 @@ final class ViewController: UIViewController {
         }
     }
     
+    private var videoPlayerView: VideoPlayerView?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .systemBackground
         
         view.addSubview(imageView)
         imageView.snp.makeConstraints {
             $0.size.equalTo(300)
             $0.center.equalToSuperview()
+        }
+        
+        view.addSubview(button)
+        button.snp.makeConstraints {
+            $0.centerX.equalTo(imageView.snp.centerX)
+            $0.top.equalTo(imageView.snp.bottom).offset(16)
+        }
+    }
+    
+    @objc func didTapButton(_ sender: UIButton) {
+        videoPlayerView = VideoPlayerView()
+        
+        guard let videoPlayerView = videoPlayerView else {
+            return
+        }
+        
+        view.addSubview(videoPlayerView)
+        
+        videoPlayerView.frame = CGRect(
+            x: 0.0,
+            y: view.frame.maxY,
+            width: view.frame.width,
+            height: view.frame.height
+        )
+        
+        UIView.animate(
+            withDuration: 0.3,
+            delay: 0.1,
+            usingSpringWithDamping: 1.0,
+            initialSpringVelocity: 1.0,
+            options: .curveEaseInOut
+        ) {
+            videoPlayerView.center.y -= self.view.frame.height
+        } completion: { _ in
+            videoPlayerView.snp.makeConstraints {
+                $0.edges.equalToSuperview()
+            }
         }
     }
     
