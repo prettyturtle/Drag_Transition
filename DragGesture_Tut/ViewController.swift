@@ -68,6 +68,10 @@ final class ViewController: UIViewController {
             return
         }
         
+        let panGesture2 = UIPanGestureRecognizer(target: self, action: #selector(didPan))
+        
+        videoPlayerView.addGestureRecognizer(panGesture2)
+        
         view.addSubview(videoPlayerView)
         
         videoPlayerView.frame = CGRect(
@@ -77,6 +81,9 @@ final class ViewController: UIViewController {
             height: view.frame.height
         )
         
+        let window = UIApplication.shared.windows.first
+        let top = window!.safeAreaInsets.top
+        
         UIView.animate(
             withDuration: 0.3,
             delay: 0.1,
@@ -84,11 +91,40 @@ final class ViewController: UIViewController {
             initialSpringVelocity: 1.0,
             options: .curveEaseInOut
         ) {
-            videoPlayerView.center.y -= self.view.frame.height
-        } completion: { _ in
-            videoPlayerView.snp.makeConstraints {
-                $0.edges.equalToSuperview()
+            videoPlayerView.center.y -= self.view.frame.height - top
+        }
+    }
+    
+    @objc func didPan(_ gesture: UIPanGestureRecognizer) {
+        let window = UIApplication.shared.windows.first
+        let top = window!.safeAreaInsets.top
+        
+        if gesture.state == .ended {
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 0.1,
+                usingSpringWithDamping: 1.0,
+                initialSpringVelocity: 1.0,
+                options: .curveEaseInOut
+            ) {
+                gesture.view?.frame = CGRect(
+                    x: 0.0,
+                    y: 0.0 + top,
+                    width: self.view.frame.width,
+                    height: self.view.frame.height
+                )
             }
+        }
+        
+        let velocity = gesture.velocity(in: gesture.view)
+        
+        if abs(velocity.y) > abs(velocity.x) {
+            let transition = gesture.translation(in: gesture.view)
+            let dy = gesture.view!.center.y + transition.y
+            
+            gesture.setTranslation(.zero, in: gesture.view)
+            
+            gesture.view?.center.y = dy
         }
     }
     

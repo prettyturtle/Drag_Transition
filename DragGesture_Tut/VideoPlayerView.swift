@@ -45,7 +45,8 @@ final class VideoPlayerView: UIView {
         }
         
         videoModuleView.snp.makeConstraints {
-            $0.leading.top.trailing.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+            $0.top.equalTo(safeAreaLayoutGuide.snp.top)
             $0.height.equalTo(UIScreen.main.bounds.width * 9 / 16)
         }
     }
