@@ -21,6 +21,9 @@ final class VideoPlayerView: UIView {
 //        $0.delegate = self
     }
     
+    private lazy var scrollView = UIScrollView()
+    private lazy var contentView = UIView()
+    
     init() {
         super.init(frame: .zero)
         backgroundColor = .systemBlue
@@ -40,7 +43,8 @@ final class VideoPlayerView: UIView {
     
     private func setupLayout() {
         [
-            videoModuleView
+            videoModuleView,
+            scrollView
         ].forEach {
             addSubview($0)
         }
@@ -49,6 +53,29 @@ final class VideoPlayerView: UIView {
             $0.leading.trailing.equalToSuperview()
             $0.top.equalTo(safeAreaLayoutGuide.snp.top)
             $0.height.equalTo(UIScreen.main.bounds.width * 9 / 16)
+        }
+        
+        scrollView.snp.makeConstraints {
+            $0.leading.trailing.bottom.equalTo(safeAreaLayoutGuide)
+            $0.top.equalTo(videoModuleView.snp.bottom)
+        }
+        
+        scrollView.addSubview(contentView)
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+            $0.width.equalToSuperview()
+        }
+        
+        let tempView = UIView().then { $0.backgroundColor = .purple }
+        
+        contentView.addSubview(tempView)
+        
+        tempView.snp.makeConstraints {
+            $0.width.equalTo(50)
+            $0.height.equalTo(1200)
+            $0.centerX.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
         }
     }
 }
