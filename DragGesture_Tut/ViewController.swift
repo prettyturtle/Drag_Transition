@@ -76,13 +76,10 @@ final class ViewController: UIViewController {
         
         videoPlayerView.frame = CGRect(
             x: 0.0,
-            y: view.frame.maxY,
-            width: view.frame.width,
-            height: view.frame.height
+            y: view.safeAreaLayoutGuide.layoutFrame.maxY,
+            width: view.safeAreaLayoutGuide.layoutFrame.width,
+            height: view.safeAreaLayoutGuide.layoutFrame.height
         )
-        
-        let window = UIApplication.shared.windows.first
-        let top = window!.safeAreaInsets.top
         
         UIView.animate(
             withDuration: 0.3,
@@ -91,14 +88,11 @@ final class ViewController: UIViewController {
             initialSpringVelocity: 1.0,
             options: .curveEaseInOut
         ) {
-            videoPlayerView.center.y -= self.view.frame.height - top
+            videoPlayerView.center.y -= self.view.safeAreaLayoutGuide.layoutFrame.height
         }
     }
     
     @objc func didPan(_ gesture: UIPanGestureRecognizer) {
-        let window = UIApplication.shared.windows.first
-        let top = window!.safeAreaInsets.top
-        
         if gesture.state == .ended {
             UIView.animate(
                 withDuration: 0.2,
@@ -109,9 +103,9 @@ final class ViewController: UIViewController {
             ) {
                 gesture.view?.frame = CGRect(
                     x: 0.0,
-                    y: 0.0 + top,
-                    width: self.view.frame.width,
-                    height: self.view.frame.height
+                    y: self.view.safeAreaLayoutGuide.layoutFrame.minY,
+                    width: self.view.safeAreaLayoutGuide.layoutFrame.width,
+                    height: self.view.safeAreaLayoutGuide.layoutFrame.height
                 )
             }
         }
@@ -120,11 +114,16 @@ final class ViewController: UIViewController {
         
         if abs(velocity.y) > abs(velocity.x) {
             let transition = gesture.translation(in: gesture.view)
+            
             let dy = gesture.view!.center.y + transition.y
             
             gesture.setTranslation(.zero, in: gesture.view)
             
-            gesture.view?.center.y = dy
+            
+            if (dy >= view.safeAreaLayoutGuide.layoutFrame.midY) {
+                
+                gesture.view?.center.y = dy
+            }
         }
     }
     

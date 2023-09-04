@@ -17,6 +17,7 @@ final class VideoPlayerView: UIView {
     
     private lazy var videoModuleView = VideoModuleView(videoURLString: videoURLString).then {
         $0.setupVideoPlayer()
+        $0.backgroundColor = .red
 //        $0.delegate = self
     }
     
