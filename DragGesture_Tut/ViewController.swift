@@ -74,11 +74,13 @@ final class ViewController: UIViewController {
         
         view.addSubview(videoPlayerView)
         
-        videoPlayerView.frame = CGRect(
-            x: 0.0,
-            y: view.safeAreaLayoutGuide.layoutFrame.maxY,
-            width: view.safeAreaLayoutGuide.layoutFrame.width,
-            height: view.safeAreaLayoutGuide.layoutFrame.height
+        videoPlayerView.snp.makeConstraints {
+            $0.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        videoPlayerView.transform = CGAffineTransform(
+            translationX: 0,
+            y: view.safeAreaLayoutGuide.layoutFrame.height
         )
         
         UIView.animate(
@@ -88,7 +90,7 @@ final class ViewController: UIViewController {
             initialSpringVelocity: 1.0,
             options: .curveEaseInOut
         ) {
-            videoPlayerView.center.y -= self.view.safeAreaLayoutGuide.layoutFrame.height
+            videoPlayerView.transform = .identity
         }
     }
     
@@ -101,12 +103,9 @@ final class ViewController: UIViewController {
                 initialSpringVelocity: 1.0,
                 options: .curveEaseInOut
             ) {
-                gesture.view?.frame = CGRect(
-                    x: 0.0,
-                    y: self.view.safeAreaLayoutGuide.layoutFrame.minY,
-                    width: self.view.safeAreaLayoutGuide.layoutFrame.width,
-                    height: self.view.safeAreaLayoutGuide.layoutFrame.height
-                )
+                gesture.view?.transform = .identity
+                
+                gesture.setTranslation(.zero, in: gesture.view)
             }
         }
         
@@ -117,12 +116,11 @@ final class ViewController: UIViewController {
             
             let dy = gesture.view!.center.y + transition.y
             
-            gesture.setTranslation(.zero, in: gesture.view)
-            
-            
             if (dy >= view.safeAreaLayoutGuide.layoutFrame.midY) {
-                
-                gesture.view?.center.y = dy
+                gesture.view?.transform = CGAffineTransform(
+                    translationX: 0,
+                    y: transition.y
+                )
             }
         }
     }
