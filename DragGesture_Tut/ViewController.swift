@@ -95,19 +95,6 @@ final class ViewController: UIViewController {
     }
     
     @objc func didPan(_ gesture: UIPanGestureRecognizer) {
-        if gesture.state == .ended {
-            UIView.animate(
-                withDuration: 0.2,
-                delay: 0.1,
-                usingSpringWithDamping: 1.0,
-                initialSpringVelocity: 1.0,
-                options: .curveEaseInOut
-            ) {
-                gesture.view?.transform = .identity
-                
-                gesture.setTranslation(.zero, in: gesture.view)
-            }
-        }
         
         let velocity = gesture.velocity(in: gesture.view)
         
@@ -123,6 +110,38 @@ final class ViewController: UIViewController {
                 )
             }
         }
+        
+        if gesture.state == .ended {
+            
+            if gesture.view!.transform.ty >= view.safeAreaLayoutGuide.layoutFrame.height / 3 {
+                UIView.animate(
+                    withDuration: 0.2,
+                    delay: 0.1,
+                    usingSpringWithDamping: 1.0,
+                    initialSpringVelocity: 1.0,
+                    options: .curveEaseInOut
+                ) {
+                    gesture.view?.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
+                } completion: { _ in
+                    gesture.view?.removeFromSuperview()
+                    self.videoPlayerView = nil
+                }
+            } else {
+                UIView.animate(
+                    withDuration: 0.2,
+                    delay: 0.1,
+                    usingSpringWithDamping: 1.0,
+                    initialSpringVelocity: 1.0,
+                    options: .curveEaseInOut
+                ) {
+                    gesture.view?.transform = .identity
+                    
+                    gesture.setTranslation(.zero, in: gesture.view)
+                }
+            }
+            
+        }
+        
     }
     
     @objc func panAction(_ gesture: UIPanGestureRecognizer) {
