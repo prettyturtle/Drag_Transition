@@ -113,7 +113,8 @@ final class ViewController: UIViewController {
         
         if gesture.state == .ended {
             
-            if gesture.view!.transform.ty >= view.safeAreaLayoutGuide.layoutFrame.height / 3 {
+            if gesture.view!.transform.ty >= view.safeAreaLayoutGuide.layoutFrame.height / 3
+                || velocity.y >= 1500 {
                 UIView.animate(
                     withDuration: 0.2,
                     delay: 0.1,
@@ -121,10 +122,13 @@ final class ViewController: UIViewController {
                     initialSpringVelocity: 1.0,
                     options: .curveEaseInOut
                 ) {
-                    gesture.view?.transform = CGAffineTransform(translationX: 0, y: self.view.frame.height)
+                    gesture.view?.transform = CGAffineTransform(
+                        translationX: 0,
+                        y: self.view.safeAreaLayoutGuide.layoutFrame.height - 100
+                    )
                 } completion: { _ in
-                    gesture.view?.removeFromSuperview()
-                    self.videoPlayerView = nil
+//                    gesture.view?.removeFromSuperview()
+//                    self.videoPlayerView = nil
                 }
             } else {
                 UIView.animate(
