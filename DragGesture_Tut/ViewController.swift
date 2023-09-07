@@ -108,6 +108,8 @@ final class ViewController: UIViewController {
                     translationX: 0,
                     y: transition.y
                 )
+                
+                videoPlayerView?.animateMiniVideoPlayerView(transition.y)
             }
         }
         

@@ -41,6 +41,45 @@ final class VideoPlayerView: UIView {
         videoModuleView.setupVideoPlayerLayer()
     }
     
+    var miniVideoPlayerViewShrinkRate: Double?
+    var miniVideoPlayerViewTransitionY: Double?
+    
+    func animateMiniVideoPlayerView(_ ty: Double) {
+        if videoModuleView.frame.height > 100 {
+            let heightShrinkRate = 1 - ty / safeAreaLayoutGuide.layoutFrame.height
+            
+            miniVideoPlayerViewShrinkRate = heightShrinkRate
+            miniVideoPlayerViewTransitionY = ty
+            
+            videoModuleView.transform = CGAffineTransform(scaleX: 1, y: heightShrinkRate)
+            videoModuleView.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: videoModuleView.frame.width,
+                height: videoModuleView.frame.height
+            )
+        } else {
+            guard let miniVideoPlayerViewShrinkRate = miniVideoPlayerViewShrinkRate,
+                  let miniVideoPlayerViewTransitionY = miniVideoPlayerViewTransitionY else {
+                return
+            }
+            
+            let widthShrinkRate = miniVideoPlayerViewTransitionY / ty
+            print(widthShrinkRate)
+            
+            videoModuleView.transform = CGAffineTransform(
+                scaleX: widthShrinkRate,
+                y: miniVideoPlayerViewShrinkRate
+            )
+            videoModuleView.frame = CGRect(
+                x: 0,
+                y: 0,
+                width: videoModuleView.frame.width,
+                height: videoModuleView.frame.height
+            )
+        }
+    }
+    
     private func setupLayout() {
         [
             videoModuleView,
