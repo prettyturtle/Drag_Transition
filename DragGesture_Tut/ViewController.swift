@@ -109,7 +109,9 @@ final class ViewController: UIViewController {
                     y: transition.y
                 )
                 
-                videoPlayerView?.animateMiniVideoPlayerView(transition.y)
+                let scrollDirection = velocity.y < 0 ? 1 : -1
+                
+                videoPlayerView?.animateMiniVideoPlayerView(transition.y, d: scrollDirection)
             }
         }
         

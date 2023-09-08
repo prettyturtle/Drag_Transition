@@ -44,39 +44,79 @@ final class VideoPlayerView: UIView {
     var miniVideoPlayerViewShrinkRate: Double?
     var miniVideoPlayerViewTransitionY: Double?
     
-    func animateMiniVideoPlayerView(_ ty: Double) {
-        if videoModuleView.frame.height > 100 {
-            let heightShrinkRate = 1 - ty / safeAreaLayoutGuide.layoutFrame.height
-            
-            miniVideoPlayerViewShrinkRate = heightShrinkRate
-            miniVideoPlayerViewTransitionY = ty
-            
-            videoModuleView.transform = CGAffineTransform(scaleX: 1, y: heightShrinkRate)
-            videoModuleView.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: videoModuleView.frame.width,
-                height: videoModuleView.frame.height
-            )
-        } else {
-            guard let miniVideoPlayerViewShrinkRate = miniVideoPlayerViewShrinkRate,
-                  let miniVideoPlayerViewTransitionY = miniVideoPlayerViewTransitionY else {
-                return
+    func animateMiniVideoPlayerView(_ ty: Double, d: Int) {
+        if d < 0 {
+            if videoModuleView.frame.height > 100 {
+                let heightShrinkRate = 1 - ty / safeAreaLayoutGuide.layoutFrame.height
+                
+                miniVideoPlayerViewShrinkRate = heightShrinkRate
+                miniVideoPlayerViewTransitionY = ty
+                
+                videoModuleView.transform = CGAffineTransform(scaleX: 1, y: heightShrinkRate)
+                videoModuleView.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: videoModuleView.frame.width,
+                    height: videoModuleView.frame.height
+                )
+            } else {
+                guard let miniVideoPlayerViewShrinkRate = miniVideoPlayerViewShrinkRate,
+                      let miniVideoPlayerViewTransitionY = miniVideoPlayerViewTransitionY else {
+                    return
+                }
+                
+                let widthShrinkRate = miniVideoPlayerViewTransitionY / ty
+                print(widthShrinkRate)
+                
+                videoModuleView.transform = CGAffineTransform(
+                    scaleX: widthShrinkRate,
+                    y: miniVideoPlayerViewShrinkRate
+                )
+                videoModuleView.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: videoModuleView.frame.width,
+                    height: videoModuleView.frame.height
+                )
             }
-            
-            let widthShrinkRate = miniVideoPlayerViewTransitionY / ty
-            print(widthShrinkRate)
-            
-            videoModuleView.transform = CGAffineTransform(
-                scaleX: widthShrinkRate,
-                y: miniVideoPlayerViewShrinkRate
-            )
-            videoModuleView.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: videoModuleView.frame.width,
-                height: videoModuleView.frame.height
-            )
+        } else {
+            if videoModuleView.frame.width >= frame.width {
+                
+                let heightShrinkRate = 1 - ty / safeAreaLayoutGuide.layoutFrame.height
+                
+                miniVideoPlayerViewShrinkRate = heightShrinkRate
+                miniVideoPlayerViewTransitionY = ty
+                
+                videoModuleView.transform = CGAffineTransform(scaleX: 1, y: heightShrinkRate)
+                videoModuleView.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: videoModuleView.frame.width,
+                    height: videoModuleView.frame.height
+                )
+            } else {
+                guard let miniVideoPlayerViewShrinkRate = miniVideoPlayerViewShrinkRate,
+                      let miniVideoPlayerViewTransitionY = miniVideoPlayerViewTransitionY else {
+                    return
+                }
+                
+                var widthShrinkRate = miniVideoPlayerViewTransitionY / ty
+                
+                if widthShrinkRate > 1.0 {
+                    widthShrinkRate = 1.0
+                }
+                
+                videoModuleView.transform = CGAffineTransform(
+                    scaleX: widthShrinkRate,
+                    y: miniVideoPlayerViewShrinkRate
+                )
+                videoModuleView.frame = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: videoModuleView.frame.width,
+                    height: videoModuleView.frame.height
+                )
+            }
         }
     }
     
