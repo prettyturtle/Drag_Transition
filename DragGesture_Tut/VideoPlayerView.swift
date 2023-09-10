@@ -65,22 +65,24 @@ final class VideoPlayerView: UIView {
                     return
                 }
                 
-                let widthShrinkRate = miniVideoPlayerViewTransitionY / ty
-                print(widthShrinkRate)
-                
-                videoModuleView.transform = CGAffineTransform(
-                    scaleX: widthShrinkRate,
-                    y: miniVideoPlayerViewShrinkRate
-                )
-                videoModuleView.frame = CGRect(
-                    x: 0,
-                    y: 0,
-                    width: videoModuleView.frame.width,
-                    height: videoModuleView.frame.height
-                )
+                if ty != 0.0 {
+                    let widthShrinkRate = miniVideoPlayerViewTransitionY / ty
+                    print(miniVideoPlayerViewTransitionY, ty)
+                    
+                    videoModuleView.transform = CGAffineTransform(
+                        scaleX: widthShrinkRate,
+                        y: miniVideoPlayerViewShrinkRate
+                    )
+                    videoModuleView.frame = CGRect(
+                        x: 0,
+                        y: 0,
+                        width: videoModuleView.frame.width,
+                        height: videoModuleView.frame.height
+                    )
+                }
             }
         } else {
-            if videoModuleView.frame.width >= frame.width {
+            if ceil(videoModuleView.frame.width) >= frame.width {
                 
                 let heightShrinkRate = 1 - ty / safeAreaLayoutGuide.layoutFrame.height
                 
