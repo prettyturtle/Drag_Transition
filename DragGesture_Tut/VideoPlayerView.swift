@@ -44,6 +44,16 @@ final class VideoPlayerView: UIView {
     var miniVideoPlayerViewShrinkRate: Double?
     var miniVideoPlayerViewTransitionY: Double?
     
+    func resetAnimation() {
+        videoModuleView.transform = .identity
+        videoModuleView.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: videoModuleView.frame.width,
+            height: videoModuleView.frame.height
+        )
+    }
+    
     func animateMiniVideoPlayerView(_ ty: Double, d: Int) {
         if d < 0 {
             if videoModuleView.frame.height > 100 {

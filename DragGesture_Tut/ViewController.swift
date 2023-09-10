@@ -142,9 +142,12 @@ final class ViewController: UIViewController {
                     initialSpringVelocity: 1.0,
                     options: .curveEaseInOut
                 ) {
+                    print("123")
                     gesture.view?.transform = .identity
                     
+                    self.videoPlayerView?.resetAnimation()
                     gesture.setTranslation(.zero, in: gesture.view)
+                    
                 }
             }
             
